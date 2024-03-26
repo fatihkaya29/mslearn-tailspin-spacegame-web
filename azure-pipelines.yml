@@ -11,20 +11,32 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
+  dotnetSdkVersion: '6.x'
 
 steps:
 - task: UseDotNet@2
+<<<<<<< HEAD
   displayName: 'Use .NET SDK 6.x'
   inputs:
     packageType: sdk
     version: '6.x'
+=======
+  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+  inputs:
+    version: '$(dotnetSdkVersion)'
+>>>>>>> 4d9be4289605ea87b66765ccd16d121a550cebbc
 
 - task: Npm@1
   displayName: 'Run npm install'
   inputs:
     verbose: false
 
+<<<<<<< HEAD
 - script: './node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot'
+=======
+- script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
+>>>>>>> 4d9be4289605ea87b66765ccd16d121a550cebbc
   displayName: 'Compile Sass assets'
 
 - task: gulp@1
@@ -32,7 +44,11 @@ steps:
 
 - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
   displayName: 'Write build info'
+<<<<<<< HEAD
   workingDirectory: Tailspin.SpaceGame.Web/wwwroot
+=======
+  workingDirectory: $(wwwrootDir)
+>>>>>>> 4d9be4289605ea87b66765ccd16d121a550cebbc
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
@@ -40,9 +56,23 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
 
+<<<<<<< HEAD
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - Release'
   inputs:
     command: 'build'
     arguments: '--no-restore --configuration Release'
     projects: '**/*.csproj'
+=======
+- template: templates/build.yml
+  parameters:
+    buildConfiguration: 'Debug'
+
+- template: templates/build.yml
+  parameters:
+    buildConfiguration: 'Release'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  condition: succeeded()
+>>>>>>> 4d9be4289605ea87b66765ccd16d121a550cebbc
