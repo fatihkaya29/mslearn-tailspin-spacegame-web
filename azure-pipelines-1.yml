@@ -1,19 +1,23 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# YAML configuration for an ASP.NET Core (.NET Framework) pipeline
+# Triggered by changes in the 'main' branch, using a Windows VM image for the build
+# Defines variables for solution, build platform, and build configuration
+# Includes steps for NuGet installation, solution restore, VS build, and VSTest
 
+# Trigger the pipeline on changes in the 'main' branch
 trigger:
 - main
 
+# Use a Windows VM image for the build
 pool:
   vmImage: 'windows-latest'
 
+# Define variables for the solution, build platform, and build configuration
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
+# Define the build steps
 steps:
 - task: NuGetToolInstaller@1
 
@@ -32,3 +36,9 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+inputs:
+  PathtoPublish: '$(build.artifactStagingDirectory)'
+  ArtifactName: 'drop'
+  publish
